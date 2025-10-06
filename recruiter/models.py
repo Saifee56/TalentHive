@@ -48,7 +48,16 @@ class JobPost(models.Model):
     updated_at=models.DateField(auto_now=True)
 
     class Meta:
-        ordering_at=['-created_at']
+        verbose_name='Job Post'
+        verbose_name_plural='Job Posts'
     
     def __str__(self):
         return f"{self.title} posted by {self.recruiter.company_name}"
+
+# class Interview(models.Model):
+
+#     STATUS_CHOICES=[
+#         ('completed','COMPLETED'),
+#         ('scheduled','Scheduled'),
+#         ('cancelled','Cancelled')
+#     ]

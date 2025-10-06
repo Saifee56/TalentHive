@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Installed apps
     "authentication",
     "recruiter",
+    "applicant",
 ]
 
 MIDDLEWARE = [
