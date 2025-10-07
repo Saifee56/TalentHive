@@ -1,5 +1,6 @@
 from django.db import models
 from authentication.models import CustomUserModel
+from applicant.models import JobApplication
 
 class RecruiterProfile(models.Model):
     user=models.OneToOneField(CustomUserModel,on_delete=models.CASCADE,related_name='recruiter_profile')
@@ -54,10 +55,21 @@ class JobPost(models.Model):
     def __str__(self):
         return f"{self.title} posted by {self.recruiter.company_name}"
 
-# class Interview(models.Model):
+class Interview(models.Model):
+    STATUS_CHOICES = [
+        ('scheduled', 'Scheduled'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+    ]
 
-#     STATUS_CHOICES=[
-#         ('completed','COMPLETED'),
-#         ('scheduled','Scheduled'),
-#         ('cancelled','Cancelled')
-#     ]
+    application = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name='interviews')
+    interview_date = models.DateTimeField()
+    interview_type = models.CharField(max_length=50)
+    meeting_link = models.URLField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='scheduled')
+    feedback = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Interview - {self.application.job.title}"

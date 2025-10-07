@@ -1,5 +1,6 @@
 from django.db import models
 from authentication.models import CustomUserModel
+from recruiter.models import JobPost
 
 def upload_resume_path(instance, filename):
     return f"resumes/{instance.user.username}/{filename}"
@@ -58,6 +59,46 @@ class ApplicantWorkExperience(models.Model):
     class Meta:
         verbose_name='Applicant Work Experience'
         verbose_name_plural='Applicant Work Experiences'
+    
+    def __str__(self):
+        return f"{self.applicant.user.username}---> {self.designation} at {self.company}"
+
+class JobApplication(models.Model):
+
+    STATUS_CHOICES=[
+        ('pending','Pending'),
+        ('reviewed','Reviewed'),
+        ('shortlisted','Shortlisted'),
+        ('rejected','Rejected'),
+        ('accepted','Accepted')
+    ]
+    job=models.ForeignKey(JobPost,on_delete=models.CASCADE,related_name='applications')
+    applicant=models.ForeignKey(CustomUserModel,on_delete=models.CASCADE,related_name='job_applications')
+    resume=models.FileField(upload_to=upload_resume_path,null=True,blank=True)
+    cover_letter=models.FileField(upload_to=upload_cover_letter_path(),null=True,blank=True)
+    applied_at=models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    reviewed_at = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        verbose_name='Job Application'
+        verbose_name_plural='Job Applications'
+    
+    def __str__(self):
+        return f"{self.applicant.username}--{self.job.title}"
+
+class SavedJob(models.Model):
+    user=models.ForeignKey(CustomUserModel,on_delete=models.CASCADE,related_name='saved_jobs')
+    job=models.ForeignKey(JobPost,on_delete=models.CASCADE,related_name='saved_by')
+    saved_at=models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name='Saved Job'
+        verbose_name_plural='Saved Jobs'
+    
+    def __str__(self):
+        return f"{self.user} saved {self.job}"
+
 
 
 
