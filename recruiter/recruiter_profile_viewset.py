@@ -38,3 +38,36 @@ class RecruiterProfileViewset(viewsets.ModelViewSet):
                  "errors":f"An error occurred {str(e)}"
             },status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+    @action(detail=True,methods=['patch'],url_path='update-recruiter-profile')
+    def update_recruiter_profile(self,request,pk=None):
+        recruiter=get_object_or_404(RecruiterProfile,pk=pk)
+
+        try:
+            with transaction.atomic(): 
+                   if not recruiter:
+                        return Response({
+                             "message":"Recruiter ID is required for update"
+                        })
+                   serializer=RecruiterProfileSerializer(recruiter,data=request.data,partial=True)
+                   if not serializer.is_valid():
+                        return Response(
+                            {
+                                "success":False,
+                                "message":"Recruiter Profile update failed",
+                                "data":serializer.errors
+                            },status=status.HTTP_400_BAD_REQUEST
+                        )
+                   serializer.save()
+                   return Response({
+                         "success":True,
+                         "message":"Recruiter profile updated successfully",
+                         "data":serializer.data
+                    },status=status.HTTP_201_CREATED)
+        except Exception as e:
+             return Response({
+                  "success":False,
+                  "message":f"An error occured {str(e)}"
+             })
+
+              
+                        
