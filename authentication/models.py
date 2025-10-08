@@ -14,7 +14,6 @@ class CustomUserModel(AbstractUser):
         ('job_seeker','Job Seeker')
     )
     professional_bio=models.TextField()
-    company_name=models.CharField(max_length=255,null=True,blank=True)
     linked_in=models.URLField(max_length=255,blank=True,null=True)
     profile_picture=models.ImageField(upload_to=upload_profile_picture,null=True,blank=True)
     role=models.CharField(max_length=25,choices=ROLE_CHOICES)

@@ -1,9 +1,9 @@
 from django.db import models
-from authentication.models import CustomUserModel
-from applicant.models import JobApplication
+# from authentication.models import CustomUserModel
+# from applicant.models import JobApplication
 
 class RecruiterProfile(models.Model):
-    user=models.OneToOneField(CustomUserModel,on_delete=models.CASCADE,related_name='recruiter_profile')
+    user=models.OneToOneField('authentication.CustomUserModel',on_delete=models.CASCADE,related_name='recruiter_profile')
     company_name=models.CharField(max_length=255)
     company_website=models.URLField(blank=True,null=True)
     position=models.CharField(max_length=20,null=True,blank=True)
@@ -62,7 +62,7 @@ class Interview(models.Model):
         ('cancelled', 'Cancelled'),
     ]
 
-    application = models.ForeignKey(JobApplication, on_delete=models.CASCADE, related_name='interviews')
+    application = models.ForeignKey('applicant.JobApplication', on_delete=models.CASCADE, related_name='interviews')
     interview_date = models.DateTimeField()
     interview_type = models.CharField(max_length=50)
     meeting_link = models.URLField(blank=True, null=True)

@@ -6,7 +6,7 @@ def upload_resume_path(instance, filename):
     return f"resumes/{instance.user.username}/{filename}"
 
 def upload_cover_letter_path(instance,filename):
-    return f"cover/{instance.user.username}"
+    return f"cover/{instance.user.username}/{filename}"
 
 class ApplicantProfile(models.Model):
 
@@ -14,7 +14,7 @@ class ApplicantProfile(models.Model):
     phone=models.CharField(max_length=25,blank=True,null=True)
     location=models.CharField(max_length=255,blank=True,null=True)
     skills=models.TextField(blank=True,null=True)
-    resume=models.FileField(upload_to=upload_resume_path(),null=True,blank=True)
+    resume=models.FileField(upload_to=upload_resume_path,null=True,blank=True)
     portfolio_url=models.URLField(blank=True,null=True)
     github_url=models.URLField(blank=True,null=True)
     created_at=models.DateTimeField(auto_now_add=True)
@@ -75,7 +75,7 @@ class JobApplication(models.Model):
     job=models.ForeignKey(JobPost,on_delete=models.CASCADE,related_name='applications')
     applicant=models.ForeignKey(CustomUserModel,on_delete=models.CASCADE,related_name='job_applications')
     resume=models.FileField(upload_to=upload_resume_path,null=True,blank=True)
-    cover_letter=models.FileField(upload_to=upload_cover_letter_path(),null=True,blank=True)
+    cover_letter=models.FileField(upload_to=upload_cover_letter_path,null=True,blank=True)
     applied_at=models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
     reviewed_at = models.DateTimeField(blank=True, null=True)
