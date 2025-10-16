@@ -69,5 +69,20 @@ class RecruiterProfileViewset(viewsets.ModelViewSet):
                   "message":f"An error occured {str(e)}"
              })
 
-              
+    @action(detail=True, methods=['delete'], url_path='delete-recruiter-profile')
+    def delete_recruiter_profile(self, request, pk=None):
+        recruiter = get_object_or_404(RecruiterProfile, pk=pk)
+        
+        try:
+            with transaction.atomic():
+                recruiter.delete()
+                return Response({
+                    "success": True,
+                    "message": "Recruiter profile deleted successfully"
+                }, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}"
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
                         
