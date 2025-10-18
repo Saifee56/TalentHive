@@ -7,8 +7,8 @@ from .job_post_viewset import JobPostViewset
 app_name='recruiter'
 
 router = DefaultRouter()
-router.register('recruiter-profile',RecruiterProfileViewset,basename='recruiter-profile')
-router.register('job-post',JobPostViewset,basename='job-post')
+router.register(r'recruiter-profile',RecruiterProfileViewset,basename='recruiter-profile')
+router.register(r'job-post',JobPostViewset,basename='job-post')
 # router.register('interview',RecruiterProfileViewset,basename='recruiter-profile')
 
 urlpatterns = [

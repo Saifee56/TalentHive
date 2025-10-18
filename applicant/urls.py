@@ -7,7 +7,7 @@ from .applicant_profile_viewset import ApplicantProfileViewset
 app_name='applicant'
 
 router = DefaultRouter()
-router.register('applicant-profile',ApplicantProfileViewset,basename='applicant-profile')
+router.register(r'applicant-profile',ApplicantProfileViewset,basename='applicant-profile')
 
 
 urlpatterns = [

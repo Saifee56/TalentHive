@@ -4,7 +4,7 @@ from .models import RecruiterProfile, JobPost, Interview
 
 @admin.register(RecruiterProfile)
 class RecruiterProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'company_name', 'position', 'industry', 'location', 'created_at')
+    list_display = ('id','user', 'company_name', 'position', 'industry', 'location', 'created_at')
     search_fields = ('user__username', 'company_name', 'industry', 'location')
     list_filter = ('industry', 'company_size', 'created_at')
     ordering = ('-created_at',)

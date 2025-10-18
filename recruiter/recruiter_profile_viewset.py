@@ -9,8 +9,9 @@ from django.db import transaction
 
 class RecruiterProfileViewset(viewsets.ModelViewSet):
 
-    permission_classes=[AllowAny]
+    permission_classes=[IsAuthenticated]
     serializer_class=RecruiterProfileSerializer
+    queryset=RecruiterProfile.objects.all()
 
     @action(detail=False,methods=['post'],url_path='create-recruiter-profile')
     def create_recruiter_profile(self,request):
@@ -26,10 +27,10 @@ class RecruiterProfileViewset(viewsets.ModelViewSet):
                                 "data":serializer.errors
                             },status=status.HTTP_400_BAD_REQUEST
                         )
-                    serializer.save()
+                    serializer.save(user=request.user)
                     return Response({
                          "success":True,
-                         "message":"Recruiter profile created successfully",
+                         "message":f"Recruiter profile created successfully",
                          "data":serializer.data
                     },status=status.HTTP_201_CREATED)
         except Exception as e:
@@ -57,7 +58,7 @@ class RecruiterProfileViewset(viewsets.ModelViewSet):
                                 "data":serializer.errors
                             },status=status.HTTP_400_BAD_REQUEST
                         )
-                   serializer.save()
+                   serializer.save(user=request.user)
                    return Response({
                          "success":True,
                          "message":"Recruiter profile updated successfully",
