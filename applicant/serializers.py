@@ -69,4 +69,14 @@ class ApplicantWorkExperience(serializers.ModelSerializer):
                     'end_date': 'End date cannot be in the future'
                 })
         
-        return attrs    
+        return attrs
+    
+    class JobApplicationSerializer(serializers.ModelSerializer):
+        class Meta:
+            model=JobApplication
+            fields='__all__'
+
+    class SavedJobSerializer(serializers.ModelSerializer):
+        class Meta:
+            model=SavedJob
+            fields='__all__'
