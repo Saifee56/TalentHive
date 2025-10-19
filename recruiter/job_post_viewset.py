@@ -9,10 +9,14 @@ from django.db import transaction
 
 class JobPostViewset(viewsets.ModelViewSet):
 
-    permission_classes=[AllowAny]
+    permission_classes=[IsAuthenticated]
     serializer_class=JobPostSerializer
 
-    @action(detail=True,methods=['post'],url_path='create-job-post')
+    def get_queryset(self):
+        """Authenticated user can only post jobs"""
+        pass
+
+    @action(detail=False,methods=['POST'],url_path='create-job-post')
     def create_job_post(self,request):
         recruiter_id=request.data.get('recruiter')
 
@@ -33,7 +37,8 @@ class JobPostViewset(viewsets.ModelViewSet):
                 return Response({
                     "success":True,
                     "message":"Job post published successfully",
-                    "data":serializer.data
+                    "data":serializer.data,
+                    "published_by":serializer.instance.recruiter.user.username
                 },status=status.HTTP_201_CREATED)
         except Exception as e:
             return Response({
