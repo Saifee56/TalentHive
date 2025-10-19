@@ -1,6 +1,8 @@
 from django.db import models
 # from authentication.models import CustomUserModel
 # from applicant.models import JobApplication
+from django.db.models.signals import post_delete
+from django.dispatch import receiver    
 
 class RecruiterProfile(models.Model):
     user=models.OneToOneField('authentication.CustomUserModel',on_delete=models.CASCADE,related_name='recruiter_profile')
@@ -16,6 +18,10 @@ class RecruiterProfile(models.Model):
 
     def __str__(self):
         return f"{self.user.username}-{self.company_name}"
+    
+
+
+
 
 class JobPost(models.Model):
     JOB_TYPE_CHOICES=[
@@ -73,3 +79,11 @@ class Interview(models.Model):
 
     def __str__(self):
         return f"Interview - {self.application.job.title}"
+    
+@receiver(post_delete, sender=RecruiterProfile)
+def delete_user_when_recruiter_deleted(sender, instance, **kwargs):
+    """
+    Delete the linked user when a recruiter profile is deleted.
+    """
+    if instance.user:
+        instance.user.delete()

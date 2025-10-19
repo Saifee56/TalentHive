@@ -13,8 +13,21 @@ class RecruiterProfileViewset(viewsets.ModelViewSet):
     serializer_class=RecruiterProfileSerializer
     queryset=RecruiterProfile.objects.all()
 
+    def get_queryset(self):
+        """
+        Users can only see their own profile
+        """
+        return RecruiterProfile.objects.filter(user=self.request.user)
+
     @action(detail=False,methods=['post'],url_path='create-recruiter-profile')
     def create_recruiter_profile(self,request):
+
+        if RecruiterProfile.objects.filter(user=request.user).exists():
+            return Response({
+                "success":False,
+                "message":"You already have a recruiter profile"
+        })
+
         try:
             with transaction.atomic():               
                     data=request.data
@@ -42,6 +55,12 @@ class RecruiterProfileViewset(viewsets.ModelViewSet):
     @action(detail=True,methods=['patch'],url_path='update-recruiter-profile')
     def update_recruiter_profile(self,request,pk=None):
         recruiter=get_object_or_404(RecruiterProfile,pk=pk)
+
+        if recruiter.user != request.user:
+            return Response({
+                "success":False,
+                "message":"You are not allowed to make any changes"
+            },status=status.HTTP_403_FORBIDDEN)
 
         try:
             with transaction.atomic(): 
@@ -73,6 +92,12 @@ class RecruiterProfileViewset(viewsets.ModelViewSet):
     @action(detail=True, methods=['delete'], url_path='delete-recruiter-profile')
     def delete_recruiter_profile(self, request, pk=None):
         recruiter = get_object_or_404(RecruiterProfile, pk=pk)
+
+        if recruiter.user != request.user:
+            return Response({
+                 "success":False,
+                 "message":"You are not allowed to delete"
+            },status=status.HTTP_403_FORBIDDEN)
         
         try:
             with transaction.atomic():
