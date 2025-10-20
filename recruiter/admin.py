@@ -13,7 +13,7 @@ class RecruiterProfileAdmin(admin.ModelAdmin):
 @admin.register(JobPost)
 class JobPostAdmin(admin.ModelAdmin):
     list_display = (
-        'title', 'recruiter', 'job_type', 'experience_level',
+        'id','title', 'recruiter', 'job_type', 'experience_level',
         'salary_min', 'salary_max', 'location', 'vacancies', 'application_deadline', 'created_at'
     )
     search_fields = ('title', 'recruiter__company_name', 'location', 'experience_level', 'job_type')

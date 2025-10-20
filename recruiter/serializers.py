@@ -28,12 +28,16 @@ class JobPostSerializer(serializers.ModelSerializer):
                 'salary_min','salary_max','location','vacancies',
                 'application_deadline','created_at','updated_at']
     
-    def validate(self,data):
+    def validate(self, data):
+        salary_min = data.get('salary_min')
+        salary_max = data.get('salary_max')
 
-        if data['salary_min'] > data['salary_max']:
-            raise serializers.ValidationError("Minimum salary cannot be greater than maximum salary")
-        
+        if salary_min is not None and salary_max is not None:
+            if salary_min > salary_max:
+                raise serializers.ValidationError("Minimum salary cannot be greater than maximum salary")
+
         return data
+
     
 class InterviewSerializer(serializers.ModelSerializer):
     class Meta:

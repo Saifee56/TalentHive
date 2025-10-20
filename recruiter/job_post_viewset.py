@@ -12,9 +12,7 @@ class JobPostViewset(viewsets.ModelViewSet):
     permission_classes=[IsAuthenticated]
     serializer_class=JobPostSerializer
 
-    def get_queryset(self):
-        """Authenticated user can only post jobs"""
-        pass
+
 
     @action(detail=False,methods=['POST'],url_path='create-job-post')
     def create_job_post(self,request):
@@ -50,6 +48,12 @@ class JobPostViewset(viewsets.ModelViewSet):
     def update_job_post(self,request,pk=None):
         job_post=get_object_or_404(JobPost,pk=pk)
 
+        if job_post.recruiter.user != request.user:
+            return Response({
+                "success":False,
+                "message":"You are not allowed to make any changes"
+            },status=status.HTTP_403_FORBIDDEN)
+
         try:
             with transaction.atomic(): 
                    serializer=JobPostSerializer(job_post,data=request.data,partial=True)
@@ -65,7 +69,8 @@ class JobPostViewset(viewsets.ModelViewSet):
                    return Response({
                          "success":True,
                          "message":"Job Post updated successfully",
-                         "data":serializer.data
+                         "data":serializer.data,
+                         "updated_by":serializer.instance.recruiter.user.username
                     },status=status.HTTP_201_CREATED)
         except Exception as e:
              return Response({
@@ -76,6 +81,12 @@ class JobPostViewset(viewsets.ModelViewSet):
     @action(detail=True, methods=['delete'], url_path='delete-job-post')
     def delete_job_post(self, request, pk=None):
         job_post = get_object_or_404(JobPost, pk=pk)
+
+        if job_post.recruiter.user != request.user:
+            return Response({
+                "success":False,
+                "message":"You are not allowed to delete"
+            },status=status.HTTP_403_FORBIDDEN)
         
         try:
             with transaction.atomic():
