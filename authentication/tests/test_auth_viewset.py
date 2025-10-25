@@ -1,0 +1,3 @@
+
+import pytest
+from auth_viewset import AuthenticationViewSet
