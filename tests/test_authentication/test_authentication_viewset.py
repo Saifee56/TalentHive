@@ -62,16 +62,7 @@ class TestAuthenticationViewset:
         assert response.data["success"]==True
         assert "access" in response.data["data"]
     
-    def test_login_invalid_credentials(self,create_test_user):
 
-        data1={
-            "email":create_test_user.email,
-            "password":"saifee12"
-        }
-        data2={
-            "email":"safuan12345@gmail.com",
-            "password":"saifee123"
-        }
 
     @pytest.mark.parametrize("email,password,expected_status",[
         ("safuan@gmail.com","saifee12",401),
